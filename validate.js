@@ -34,7 +34,9 @@
             valid_ip: 'The %s field must contain a valid IP.',
             valid_base64: 'The %s field must contain a base64 string.',
             valid_credit_card: 'The %s field must contain a vaild credit card number',
-            is_file_type: 'The %s field must contain only %s files.'
+            is_file_type: 'The %s field must contain only %s files.',
+            valid_url: 'The %s field must contain a valid URL.',
+            valid_urls: 'The %s field must contain valid URLs.',
         },
         callback: function(errors) {
 
@@ -57,7 +59,8 @@
         naturalNoZeroRegex = /^[1-9][0-9]*$/i,
         ipRegex = /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/i,
         base64Regex = /[^a-zA-Z0-9\/\+=]/i,
-        numericDashRegex = /^[\d\-\s]+$/;
+        numericDashRegex = /^[\d\-\s]+$/,
+        urlRegex = /([^\/]+)?\/\/[a-z0-9\-]+(\.[a-z0-9\-]{2,})*\.[a-z0-9]{2,}(:[0-9]+)?\/?[a-z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*+,;=]*/i;
 
     /*
      * The exposed public object to validate a form:
@@ -448,6 +451,23 @@
             }
 
             return inArray;
+        },
+        
+        valid_url: function(field) {
+	        return (urlRegex.test(field.value));
+        },
+        
+        valid_urls: function(field, urlDelimiter) {
+        	// Delimiter could be changed via options if necessary/appropriate
+	        var result = field.value.split(urlDelimiter || "\n");
+
+            for (var i = 0; i < result.length; i++) {
+                if (!urlRegex.test(result[i])) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     };
 
